@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:#f5f5f5;color:#666}li{list-style:none;overflow: hidden;padding-right:15px;}.check,.info{margin-top:15px}#personal li{margin-bottom:5px;line-height:48px;border-bottom:1px solid #e6e6e6}#personal ul{background:#fff;padding:0 15px;border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6}#personal li:last-child{border-bottom:none}.keys{float:left;}.values{color:#999;text-align:right;overflow:hidden;}.tips{font-size:16px;color:#d9d9d9}.li_img{float:left;margin-right:10px;}.li_img img{vertical-align: middle;}</style></head><body>
+<!--个人信息-->
+<div id="personal">
+    <div class="content">
+        <ul class="info">
+
+            {%if data["user"]["nickname"]=="" %}
+            <li id="li_nickname">
+                <p class="li_img"><img src="/static/images/jingling/user/info/nickname.png" width="15px" /></p>
+                <p class="keys">昵称</p>
+                <p id="nickname" class="values">去设置 &gt;</p>
+            </li>
+            {%else%}
+            <li id="li_nickname">
+                <p class="li_img"><img src="/static/images/jingling/user/info/nickname.png" width="15px" /></p>
+                <p class="keys">昵称</p>
+                <p id="nickname" class="values">{{data["user"]["nickname"]}} &gt;</p>
+            </li>
+            {%end%}
+
+            {%if data["user"]["phone"] == 0%}
+                <li binded="0" id="li_tel">
+                    <p class="li_img"><img src="/static/images/jingling/user/info/tel.png" width="15px" /></p>
+                    <p class="keys">手机号</p>
+                    <p id="tel" class="values">立即绑定 &gt;</p>
+                </li>
+            {%else%}
+                <li binded="1" id="li_tel">
+                    <p class="li_img"><img src="/static/images/jingling/user/info/tel.png" width="15px" /></p>
+                    <p class="keys">手机号</p>
+                    <p id="tel" class="values">{{data["user"]["phone"]}}</p>
+                </li>
+            {%end%}
+
+            {%if data["user"]["parent1"] == None%}
+            <li binded="0" id="li_invite">
+                <p class="li_img"><img src="/static/images/jingling/user/info/invite.png" width="15px" /></p>
+                <p class="keys">填写邀请码</p>
+                <p id="invite" class="values">填写立奖1元 &gt;</p>
+            </li>
+            {%else%}
+            <li binded="1" id="li_invite">
+                <p class="li_img"><img src="/static/images/jingling/user/info/invite.png" width="15px" /></p>
+                <p class="keys">师父邀请码</p>
+                <p id="invite" class="values">{{data["parent_tid"]}}</p>
+            </li>
+            {%end%}
+        </ul>
+        <ul class="check">
+            {%if data["user"]["phone"] != 0%}
+            <li id="li_changePassword">
+                <p class="li_img"><img src="/static/images/jingling/user/info/password.png" width="15px" /></p>
+                <p class="keys">修改密码</p>
+                <p class="values">&gt;</p>
+            </li>
+            {%end%}
+            <li id='li_problem'>
+                <p class="li_img"><img src="/static/images/jingling/user/info/problem.png" width="15px" /></p>
+                <p class="keys">常见问题</p>
+                <p class="values">&gt;</p>
+            </li>
+            <li id='li_aboutus'>
+                <p class="li_img"><img src="/static/images/jingling/user/info/aboutus.png" width="15px" /></p>
+                <p class="keys">关于我们</p>
+                <p class="values">&gt;</p>
+            </li>
+            <li id='li_qqgroup'>
+                <p class="li_img"><img src="/static/images/jingling/user/info/qqgroup.png" width="15px" /></p>
+                <p class="keys">官方QQ群</p>
+                <p class="values" id="qqgroup"></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/template" id="tpl-qq"><span style="-webkit-user-select:text;">{=qq}</span></script>
+<script src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script>
+require.config({
+    paths: {
+        "zepto": "http://w.qiandeer.com/qd/static/lock/assets/zepto",
+        "api": "http://w.qiandeer.com/qd/static/lock/assets/api",
+        "skin": "/static/js/skin"
+    },
+    shim: {
+        "zepto": {
+            exports: "$"
+        },
+        "api": {
+            deps: ['zepto'],
+            exports: "API"
+        },
+        "skin": {
+            deps: ['zepto']
+        }
+    }
+});
+
+require(['zepto', 'api', 'skin'], function ($, API, skin) {
+
+
+    function insertTemp(appname, icon, qq, intro, color, hbicon, hbintro){
+
+        $("#tpl-qq").tmpl({qq:qq}).appendTo($("#qqgroup"));
+
+    }
+
+    insertTemp(localStorage['lsappname'],localStorage['lsicon'],localStorage['lsqq'],localStorage['lsintro'],localStorage['lscolor'],localStorage['lshbicon'],localStorage['lshbintro']);
+    
+    var nickname=$('#nickname'),
+        tel=$('#tel'),
+        invite=$('#invite');
+
+    if(sessionStorage.lsnickname){
+        nickname.text(sessionStorage.lsnickname);
+    }
+
+    if(sessionStorage.lsphone){
+        tel.text(sessionStorage.lsphone);
+    }
+
+    if(sessionStorage.lsinvite){
+        invite.text(sessionStorage.lsinvite);
+    }
+
+    $('#li_nickname').click(function(){
+        location.href='setinfo?fn=0';
+    });
+
+    $('#li_tel').click(function(){
+        if(sessionStorage.lsphone){
+            window.ups_sdk_browser.onToast("您已经绑定,不能更改", 0);
+            }
+        else if($(this).attr("binded") == "0"){
+            location.href='setinfo?fn=1';
+        }
+        else{
+            window.ups_sdk_browser.onToast("您已经绑定,不能更改", 0);
+        }
+    });
+
+    $('#li_invite').click(function(){
+        if(sessionStorage.lsinvite){
+            window.ups_sdk_browser.onToast("师徒关系不能更改", 0);
+        } else if($(this).attr("binded") == "0"){
+            location.href='setinfo?fn=2';
+        }
+        else{
+            window.ups_sdk_browser.onToast("师徒关系不能更改", 0);
+        }
+
+    });
+
+    $('#li_changePassword').click(function(){
+        location.href='setinfo?fn=3';
+    });
+
+    $('#li_problem').click(function(){
+        location.href='setinfo?fn=4';
+    });
+
+    $('#li_aboutus').click(function(){
+        location.href='setinfo?fn=5';
+    });
+
+});
+/*
+0：昵称
+1：绑定手机
+2：邀请码
+3：修改密码
+4：常见问题
+5：关于我们
+*/    
+
+</script>
+</body>
+</html>

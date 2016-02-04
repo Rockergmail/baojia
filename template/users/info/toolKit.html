@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>detail</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:#f5f5f5}.active{display:block}.passive{display:none}.keys{display:inline-block;width:21%;white-space:nowrap;}.tips{float:right;font-size:16px}.tip-layer{top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);overflow:hidden;z-index:9999}.absolute{position:absolute}.active ul{background:#fff;padding:0 15px;margin-top:15px;border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6}.active li{list-style:none;height:48px;line-height:48px;border-bottom:1px solid #e6e6e6}.active li:last-child{border-bottom:none}.active .btn{display:block;width:75%;margin:0 auto;color:#fff;margin-top:30px;-webkit-border-radius:8px}input{border:none;color:#999;height:80%;font-size:16px;ime-mode:disabled!important}input:focus{outline:0}#getCaptcha{color:#fff;height:38px;line-height:38px;-webkit-border-radius:6px;text-align:center;margin-top:5px}::-webkit-input-placeholder{font-size:16px}.grey{background:grey}
+    dl,dt,dd{margin:0px;padding: 0px;}
+    #id_problem{padding:0px 15px;}
+    dl,dt,dd{margin:0px;padding: 0px}
+    #id_problem dd{font-size:13px;margin-top:8px;line-height: 1.6em;}
+    #id_problem span{width:1.2em;margin-right:5px;float:left;}
+    #id_problem p{overflow: hidden;}
+    .mark_a{text-align: center;}
+    .mark_q{color:white;width:1.2em;height: 1.2em;line-height:1.4em;-webkit-border-radius: 50%; text-align:center;font-size:13px;}
+    #id_problem dl{padding: 15px 0px;border-bottom: 1px solid #e6e6e6;}
+    #id_content{background: white;padding: 15px 15px;text-indent: 2em;line-height: 1.5em;}
+    #id_content p{margin: 8px 0px;}
+    #id_qqgroup{background: white;padding: 15px;margin-top: 15px;}
+    #id_outline{padding: 15px; border:1px solid #ccc;}
+    .class_values{float:right;-webkit-user-select:text;}
+    </style>
+    <!-- 常见问题 -->
+<script type="text/template" id="tpl-problem">
+<dl>
+    <dt><span class='mark_q primaryBgColor'>Q</span><p class="primaryColor">我想注册{=appname}，希望了解下如何保证我的账户安全？</p></dt>
+    <dd><span class='mark_a primaryColor'>A</span><p>{=appname}采用短信验证+手机设备绑定的双保险机制。同时{=appname}中的所有功能包括您的收益、兑换均采用非常严格的加密方式，进而保证了您的账号安全。特别提醒您注意的是，请不要将手机号和验证码交给陌生人。</p></dd>
+</dl>
+<dl>
+    <dt><span class='mark_q primaryBgColor'>Q</span><p class="primaryColor">有几种方法可以获得收益？</p></dt>
+    <dd><span class='mark_a primaryColor'>A</span><p>在{=appname}中获得收益的方式非常多，新手红包、下载应用完成任务、每日红包、徒弟徒孙完成任务你都可以获得收益。后续还将开放更多的获得收益的方式与玩法，敬请期待。</p></dd>
+</dl>
+<dl>
+    <dt><span class='mark_q primaryBgColor'>Q</span><p class="primaryColor">什么情况下我才能拿到收徒的奖励？</p></dt>
+    <dd><span class='mark_a primaryColor'>A</span><p>徒弟填写你的专属邀请码，并完成手机绑定，你才可以获得2元奖励。</p></dd>
+</dl>
+<dl>
+    <dt><span class='mark_q primaryBgColor'>Q</span><p class="primaryColor">提现什么时候可以到账？</p></dt>
+    <dd><span class='mark_a primaryColor'>A</span><p>通常在12小时内就可以到账，碰到节假日就顺延。如果实在着急也可以进群联系客服MM，{=appname}将在第一时间为您解决。</p></dd>
+</dl>
+<dl>
+    <dt><span class='mark_q primaryBgColor'>Q</span><p class="primaryColor">如果提现失败了可以退款么？</p></dt>
+    <dd><span class='mark_a primaryColor'>A</span><p>提现失败的退款都是自动进行的，当然您也可以联系客服MM为您人工处理。退款的状态您可以到“立即提现”--“兑换记录”查看。</p></dd>
+</dl>
+</script>
+
+<!-- 关于我们 -->
+<script type="text/template" id="tpl-about">
+<section>
+<img src='{=icon}' width='144px' style="display:block;margin:15px auto;"/>
+<section id='id_content'>{=intro}</section>
+</section>
+</script>
+
+<script type="text/template" id="tpl-color">
+    <style>.primaryBgColor{background:{=color};}.primaryColor{color:{=color}}</style></script>
+    </head><body>
+
+<!--修改昵称-->
+<div id="changeNickName" class="passive">
+    <ul>
+    <label for="inputNickName"><li><p class="keys">昵称</p><input id="inputNickName" maxlength="10" placeholder="请输入昵称" value="{{data['user']['nickname']}}"></li></label>
+    </ul>
+    <div id="submitNickName" class="btn primaryBgColor">提交</div>
+</div>
+
+<!--填写邀请码--> 
+<div id="inputInvite" class="passive">
+    <ul><li><p class="keys">邀请码</p><input id="yourInvite" placeholder="仅可填写一次" maxlength="12"></li></ul>
+    <div id="submitInvite" class="btn primaryBgColor">提交</div>
+</div>
+
+<!--修改密码-->
+<div id="changePass" class="passive">
+    <ul>
+    <li>
+        <p class="keys">&nbsp;&nbsp;&nbsp;&nbsp;手机号</p><input type="text" id="phoneNum" value="{{data["user"]["phone"]}}" readonly="readonly" />
+    </li>
+    <li>
+    <p class="keys">&nbsp;&nbsp;&nbsp;&nbsp;新密码</p><input type="password" id="newPass" maxlength="10"><span id="tipA" class="tips"></span></li>
+    <li><p class="keys">确认密码</p><input type="password" id="newPassConfirm" maxlength="10"><span id="tipB" class="tips"></span></li></ul>
+    <div id="submitPass" class="btn primaryBgColor">确定</div>
+</div>
+
+<!-- 手机绑定 -->
+<div id="bind" class="passive">
+    <ul><li>
+        <p class="keys">手机号</p><input id="telInput" placeholder="请输入手机号" maxlength="13" type="tel" style="width:70%"></li>
+        <li><p class="keys">验证码</p><input id="captchaInput" placeholder="请输入验证码" maxlength="6" style='width:45%' >
+        <span id="getCaptcha" class="tips primaryBgColor" style='width:30%'>获取验证码</span></li>
+        <li><p class="keys">密码</p><input id="setPass" type="password" placeholder="请设置密码" style="width:70%" maxlength="10">
+        <span id="tipC" class="tips"></span>
+    </li></ul>
+    <div id="goBind" class="btn passive primaryBgColor">绑定</div>
+</div>
+
+<!-- 常见问题 -->
+<article id='id_problem' class='passive'></article>
+
+<!-- 关于我们 -->
+<article id='id_aboutus' class='passive'></article>
+
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>
+    function insertTemp(appname, icon, qq, intro, color, hbicon, hbintro){
+
+        $('#tpl-problem').tmpl({appname:appname,icon:icon,qq:qq,intro:intro}).appendTo($("#id_problem"));
+        $('#tpl-about').tmpl({appname:appname,icon:icon,qq:qq,intro:intro}).appendTo($("#id_aboutus"));
+        $("#tpl-color").tmpl({color:color}).appendTo(document.head);
+
+    }
+
+    insertTemp(localStorage['lsappname'],localStorage['lsicon'],localStorage['lsqq'],localStorage['lsintro'],localStorage['lscolor'],localStorage['lshbicon'],localStorage['lshbintro']);
+
+    function onCaptchas(captchas){
+        $("#captchaInput").val(captchas);
+    }
+
+    function wait(span){
+        var interval = setInterval(function(){
+            span -= 1;
+            if(span <= 0){
+                clearInterval(interval);
+                $("#getCaptcha").removeClass("grey").addClass("primaryBgColor");
+                $("#getCaptcha").html("获取验证码");
+            }
+            else{
+                $("#getCaptcha").html("剩余" + span +"秒");
+            }
+        }, 1000);
+    }
+
+    var fnNum=['#changeNickName','#bind','#inputInvite','#changePass','#id_problem','#id_aboutus'],
+        params = API.getRequest(),
+        phoneRegx=/^(13[0-9]|15[012356789]|17[0678]|18[0-9]|14[57])[0-9]{8}$/,
+        captchaRegx=/^[0-9]{4}$/,
+        passwordRegx=/^.{6,}$/,
+        nicknameRegx=/^.{1,}$/,
+        inviteRegx=/^[a-zA-Z0-9]{4,}$/,
+        telInput=$('#telInput'),
+        captchaInput=$('#captchaInput'),
+        password=$('#setPass'),
+        inputNickName=$('#inputNickName'),
+        submitNickName=$('#submitNickName'),
+        yourInvite=$('#yourInvite'),
+        submitInvite=$('#submitInvite'),
+        newPass=$('#newPass'),
+        newPassConfirm=$('#newPassConfirm'),
+        submitPass=$('#submitPass'),
+        captchaResult=false;
+
+//提交昵称
+if(params.fn==0){
+    submitNickName.click(function(){
+        var nickname = inputNickName.val();
+        var data = {
+            "nickname": nickname
+        };
+        $.post("/user/nickname", data, function(resp){
+            if(resp["code"] == 0){
+                window.ups_sdk_browser.onToast("昵称设置成功", 0);
+                if( sessionStorage.lsnickname ){ sessionStorage.lsnickname=''; }
+                    sessionStorage.lsnickname=inputNickName.val()+" >";
+                window.history.go(-1);
+            }
+        });
+    });
+}
+
+//绑定手机
+if(params.fn==1){
+
+    $('#getCaptcha').click(function(){
+        
+        var $btn = $(this),
+            phoneDeal = telInput.val().trim(),
+            phoneResult = phoneRegx.exec(phoneDeal);
+
+        if(!phoneResult){
+            window.ups_sdk_browser.onToast("手机号码格式错误", 0);
+            telInput.focus();
+            return false;
+        }
+
+        if($(this).hasClass("grey")){
+            window.ups_sdk_browser.onToast("请稍后重试!", 0);
+            return false;
+        } else {
+            $btn.removeClass("primaryBgColor").addClass("grey");
+            window.ups_sdk_browser.onCaptchas();
+            
+            var data = {
+                "phone": telInput.val()
+            };
+
+            $.post('/user/bind/captchas', data, function(resp){
+                if(resp["code"] == 0){
+                    wait(120);
+                }
+                else{
+                    window.ups_sdk_browser.onToast(resp["err"]["msg"], 1);
+                }
+            });
+        }
+    });
+
+    $('#goBind').click(function(){
+        captchaResult=captchaRegx.exec(captchaInput.val());
+
+        var phoneDeal=telInput.val().trim(),
+            phoneResult=phoneRegx.exec(phoneDeal),
+            passwordResult=passwordRegx.exec(password.val());
+
+        if(!phoneResult){
+            window.ups_sdk_browser.onToast("手机号码格式错误", 0);
+            telInput.focus();
+            return false;
+        }
+
+        if(!(captchaResult)){
+            window.ups_sdk_browser.onToast("验证码长度错误", 0);
+            captchaInput.focus();
+            return false;   
+        }
+
+        if(!passwordResult){
+            window.ups_sdk_browser.onToast("密码长度至少6位", 0);
+            password.val('');
+            password.focus();
+            return false;
+        }
+
+        if(phoneResult && captchaResult && passwordResult){
+            var data = {
+                "phone": telInput.val(),
+                "captchas": captchaInput.val(),
+                "password": password.val()
+            };
+
+            $.post("/user/bind", data, function(resp){
+                if(resp["code"] == 0){
+                    var msg = resp["data"]["msg"];
+                    if( sessionStorage.lsphone ){ sessionStorage.lsphone=''; }
+                        sessionStorage.lsphone=telInput.val();
+                        window.ups_sdk_browser.onToast(msg, 1);
+                        if(API.getRequest()["pg"]){
+                            window.ups_sdk_browser.doSomething(102,0,'');
+                        } else {
+                            window.history.go(-1);
+                        }
+                }
+                else{
+                    var msg = resp['err']['msg'];
+                    window.ups_sdk_browser.onToast(msg, 1);
+                    captchaInput.focus();
+                    return false;
+                }
+            });
+        }
+
+    });
+} 
+
+//邀请码
+if(params.fn == 2){
+    submitInvite.click(function(){
+        if(inviteRegx.exec(yourInvite.value)){
+            var parent_tid = $("#yourInvite").val();
+
+            var data = {
+                "parent_tid": parent_tid
+            };
+
+            $.ajax({
+            	url:'/user/invite',
+				type:'POST',
+				data:data,
+				dataType:'json',
+				timeout:5000,
+				cache:false,
+				success:function(data,textStatus,xhr){
+					if(data["code"] == 0){
+                        var msg = data["data"]["msg"];
+                        window.ups_sdk_browser.onToast(msg, 1);
+                        if( sessionStorage.lsinvite ) { 
+                            sessionStorage.lsinvite='';
+                        }
+                        sessionStorage.lsinvite=yourInvite.val();
+                        window.history.go(-1);
+                	} else {
+	                    window.ups_sdk_browser.onToast(data["err"]["msg"], 1);
+	                }
+				},
+				error:function(xhr,textStatus,errorThrown){
+                    if(textStatus=='timeout'){
+                        //超时处理
+                    }
+                }
+            });
+        }
+    });
+}
+
+//修改密码
+if (params.fn == 3) {
+
+    submitPass.click(function(){
+
+        if (newPass.val() === "" || newPassConfirm.val() === "") {
+            window.ups_sdk_browser.onToast("请填写密码", 0);
+            newPass.focus();
+            return false;
+        }
+
+        if (!passwordRegx.exec(newPass.val())) {
+            window.ups_sdk_browser.onToast("长度不足6位", 0);
+            newPass.focus();
+            return false;
+        }
+
+        if (newPass.val() !== newPassConfirm.val()) {
+            window.ups_sdk_browser.onToast("密码不匹配", 0);
+            newPassConfirm.focus();
+            return false;
+        }
+
+        $.ajax({
+                url:"/user/changepass",
+                type:'POST',
+                dataType:'json',
+                data:{
+                    "password": newPassConfirm.val()
+                },
+                timeout:10000,
+                cache:false,
+                success:function(data,textStatus,xhr){
+                    if (data["code"] === 0) {
+                        window.ups_sdk_browser.onToast("修改成功", 0);
+                        history.go(-1);
+                    }
+                },
+                error: function(xhr,textStatus,errorThrown) {
+                    if (textStatus == "timeout") {
+                        window.ups_sdk_browser.onToast("连接超时，请重试", 0);
+                    }
+                }
+                });
+    });
+}
+
+if(params.fn<=6){
+    $(fnNum[params.fn]).get(0).className='active';
+}
+
+</script>
+</body>
+</html>

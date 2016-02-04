@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta div_liwuet="UTF-8">
+    <title>红包三重礼</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:indianred}#header{width:100%;display: block;}.status{background:#a0a0a0;float:right;margin-bottom:9px;color:white; border-radius: 6px; height:2em;line-height: 2em; }#status1,#status2{overflow: hidden;width:25%;margin-top:-0.3em;}.div_liwu{width:87%;background: #ffcc00;overflow:hidden;margin:0 auto;margin-bottom: 8px;}.tip{margin-top:15px;margin-bottom: 15px;font-size:13px;}.wrapper{padding: 9px 18px;}.record{width:70%;height:1.1em;background:white;float:left;overflow:hidden;border-radius:5px;padding:2px}#record1,#record2{height:100%;background:orange;border-radius:5px}#div_rd1:before,#div_rd2:before,#record1:before,#record2:before{display:block;text-align:center}#div_rd1:before{content:attr(divrd1);}#div_rd2:before{content:attr(divrd2);}#record1:before{content:attr(rd1);}#record2:before{content:attr(rd2);}#shuoming{position: absolute;right:6%;bottom: 0px;width:80px;-webkit-transform: translate3d(0,0)}@-webkit-keyframes shake{10%,90%{-webkit-transform:translate3d(-1px, 0, 0)}20%,80%{-webkit-transform:translate3d(2px, 0, 0)}30%,50%,70%{-webkit-transform:translate3d(-4px, 0, 0)}40%,60%{-webkit-transform:translate3d(4px, 0, 0)}}
+    </style></head><body>
+
+<div>
+    <a href="weixin://contacts/profile/gh_dd4b2c2ada8b">点击这里添加Baidufe公众号</a>
+    <a href="http://weixin.qq.com/r/NHXo5ybEphjZhzeEnyAQ">点击这里添加Baidufe公众号</a>
+</div>
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>  
+    $(document).ready(function(){
+        var params = API.getRequest();
+        var version = params['v']?params['v']:0;
+
+        setTimeout(function(){$('#shuoming').css("-webkit-animation","shake 0.82s cubic-bezier(.36,.07,.19,.97) both")},500);
+        
+        $("#shuoming").click(function(){
+            location.href="/static/page/shuoming.html";
+        });
+
+        $.post("/hongbao/triple/status", {}, function(resp){
+
+            var downloadpm= parseInt(resp["data"]["times_task1"]);  //下载红包
+            var signpm = parseInt(resp["data"]["times_task2"]);  //签到红包
+            var dailypm = parseInt(resp["data"]["allow_daily"]); //每日红包
+            var download=(downloadpm/5*100>=100)?'100%':(downloadpm/5*100).toFixed(3)+'%';
+            var sign=(signpm/6*100>=100)?"100%":(signpm/6*100).toFixed(3)+'%';
+
+            //下载任务判断
+            if(downloadpm>-1){
+                $('#record1').css("width",download);
+                $("#record1").attr('rd1',downloadpm+"/5");
+                $('#status1').css("background-color","#1783e5").text("去下载").click(function(){
+                        if(downloadpm>=5){
+                            window.location.replace('/hongbao/triple/pickup?pm=1&v='+version);
+                        } else {
+                        if(params.vc>=2){
+                            window.ups_sdk_browser.doSomething(103,0,'');
+                        }   }
+                });
+                if(downloadpm==0){
+                    $("#div_rd1").attr('divrd1','0/5');
+                }
+                if(downloadpm>=5){
+                    $("#status1").css("background-color","#e6212a").text("领红包");
+                }
+            }
+            else{
+                $("#status1").css("background-color","#a0a0a0").text("已领过");
+            }
+
+            //签到任务判断
+            if(signpm >-1){
+                $('#record2').css("width",sign);
+                $("#record2").attr('rd2',signpm+"/6");
+
+                $('#status2').css("background-color","#1783e5").text("去签到").click(function(){
+                        if(signpm>=6){
+                            window.location.replace('/hongbao/triple/pickup?pm=2&v='+version);
+                        } else {
+                        if(params.vc>=2){
+                            window.ups_sdk_browser.doSomething(103,1,'');
+                        } }
+                });
+                if(signpm==0){
+                    $("#div_rd2").attr('divrd2','0/6');
+                }
+                if(signpm>=6){
+                    $("#status2").css("background-color","#e6212a").text("领红包");
+                }
+            }
+            else{
+                $("#status2").css("background-color","#a0a0a0").text("已领过");
+            }
+
+            //每日红包判断
+            if(dailypm == 1){
+                $('#status3').text('抢红包').css({"background":"#e6212a"}).click(function(){
+                    window.location.replace('/hongbao/triple/pickup?pm=3&v='+version);
+                });
+            }
+            else{
+                $('#status3').text('您今天不能再抢了,明天再来喔！');
+            }
+    });
+    });
+
+</script>
+</body>
+</html>

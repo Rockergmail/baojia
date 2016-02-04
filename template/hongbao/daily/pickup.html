@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <title>pocket money</title>
+    <link rel="stylesheet" href="//dn-w-qiandeer.qbox.me/qd/static/dist/1.9.14/common.css">
+    <style>body{background-color:transparent}.tip-layer{background:rgba(0,0,0,.8);width:100%;height:100%;overflow:hidden;-webkit-transform:translateZ(0)}@-webkit-keyframes animations{0%{-webkit-transform:scale(.3);opacity:0}20%{-webkit-transform:scale(.6);opacity:1}80%{-webkit-transform:scale(1.2)}100%{-webkit-transform:scale(1)}}@keyframes animations{0%{transform:scale(0);opacity:0}20%{transform:scale(.6);opacity:1}80%{transform:scale(1.2)}100%{transform:scale(1)}}.bg2{display:none;width:280px;height:367px;left:50%;margin-left:-140px;top:50%;margin-top:-183.5px;background-color:#de452e;border-radius:10px;text-align:center;-webkit-transform:translateZ(0);-webkit-animation:animations .5s ease-out;animation:animations .5s ease-out;}.char{color:#fff;margin-top:80px;width:100%;line-height:1.5em}.icon-closex{right:25px;top:25px}.head{display:block;margin:23px auto 12px;border:3px solid #fff;-webkit-border-radius:50%;border-radius:50%}.cid{margin-bottom:10px}.char2{margin-bottom:20px}.money{font-size:44px;margin-bottom:0;font-weight:700}#getmoney{width:193px;height:39.5px;line-height:39.5px;background-color:#ffbb01;margin:0 auto 10px;border-radius:8px}.char3{opacity:.5;color:#fff;width:193px;margin:0 auto 15px;height:33px}</style></head><body>
+<div class="tip-layer relative">
+       <div class="bg2 absolute" style="display:block">
+            <img class="head" src="/static/images/jingling/hongbao/default.png" width="100px" height="100px">
+            <p class="cid fs-12 fc-white">ID : <span id="id_tid"></span></p>
+            <p class="char2 fs-18 fc-white">福利红包，大吉大利</p>
+            <p id="id_bonus" class="fc-white money">00.00</p>
+            <p class="char3">已存入您的余额</p>
+            <p id="getmoney" class="fs-18 fc-white tac">拿钱走人</p>
+        </div>
+	</div>
+    <script src="http://w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+    <script src="/static/lib/countup.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.post("/hongbao/daily/pickup", {}, function(resp){
+                var bonus = parseFloat(resp["data"]["bonus"]);
+                var tid = resp["data"]["tid"];
+                $("#id_tid").html(tid);
+                $("#id_bonus").html(bonus);
+
+                var options = {
+                          useEasing : true,
+                          useGrouping : true,
+                          separator : ',',
+                          decimal : '.',
+                          prefix : '',
+                          suffix : ''
+                        };
+                    var showNumber=new CountUp('id_bonus',0,bonus,2,3.5,options);
+                    showNumber.start();
+            });
+
+        });
+
+        $('#getmoney').click(function(){
+            window.ups_sdk_browser.doSomething(102,0,'');
+        });
+        
+    </script>
+</body>
+</html>

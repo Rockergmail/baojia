@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>每日红包</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>.active{display:block}.passive{display:none}body{background:#ba221e}#header{width:100%}#footer{bottom:0;width:100%}#round{width:270px;display:block;margin:0 auto;bottom:0}#chars{width:250px;background:#fdf8de;margin:0 auto;overflow:hidden;left:50%;margin-left:-125px;top:-3px;z-index:9999;-webkit-border-radius:0 0 6px 6px}#more,#status{width:80%;background:#ee534f;height:40px;line-height:40px;-webkit-border-radius:6px;margin:0 auto;margin-bottom:15px}#mainchar{padding:20px 20px 10px;color:#661305;font-size:18px;line-height:2em;font-weight:700}#mainchar .red{color:red;font-size:30px;vertical-align:top}#leftchar{padding:0 20px 40px;color:#661305}#status{background:#ccc}</style></head><body>
+<div class="absolute">
+    <img src="/static/images/jingling/hongbao/packetheader.png" width="100%" id="header">
+    <div class="relative" style="top:-30px">
+        <img src="/static/images/jingling/hongbao/packetround.png" id="round">
+        <div id="chars" class="relative">
+            <p id="mainchar">每天 <span class="red">100000</span> 个红包限量福利，早到早得~<br>不要错过哦~</p>
+            <div id="leftchar">红包剩余份额：<span id="id_surplus" class="red">10000</span> 份</div>
+            <div id="status" class="tac fc-white">连接中...</div>
+            <div id="more" class="tac fc-white">赚更多</div>
+        </div>
+    </div>
+</div>
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>  
+    var params = API.getRequest();
+    $('#more').click(function(){
+        if(params.vc==2){
+            window.ups_sdk_browser.doSomething(103,0,'');
+        } else {
+        location.replace('/master/index');}
+    });
+
+    $(document).ready(function(){
+        $.post("/hongbao/daily/index", {}, function(resp){
+            var surplus = parseInt(resp["data"]["surplus"]);
+            var allow = parseInt(resp["data"]["allow"]);
+            $("#id_surplus").html(surplus);
+
+            if(allow == 1){
+                $('#status').text('抢红包').css('background-color','#ee534f').click(function(){
+                    window.location.replace('/hongbao/daily/pickup');
+                });
+            }
+            else{
+                $('#status').text('您今天不能再抢了噢！');
+            }
+        });
+    });
+</script>
+</body>
+</html>

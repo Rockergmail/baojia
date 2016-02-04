@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>收入明细</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:#f5f5f5;color:#999}.active{display:block}.passive{display:none}
+    #index{width:90%;margin:0 auto;margin-top:15px;overflow:hidden;}
+    #index p{background:white;float:left;width:32.8%;padding:5px 0;text-align:center;}
+    #index .active{color:white;}
+    .detail{display:none;background:#fff;border:1px solid #e6e6e6;width:90%;margin:0 auto;margin-top:15px;font-size:14px}
+    .detail dd,.detail dt{margin:0;padding:15px}
+    .detail dd{padding-top:0;border-bottom:1px solid #e6e6e6}
+    .detail dd:last-child{border:none}
+    .right{float:right;color:#999}
+    .show{display:block}
+    .left{color:#646462;font-weight: bold}
+    </style>
+    <script type="text/template" id="tpl-color">
+    <style>.primaryBgColor{background:{=color};}.primaryColor{color:{=color}} #index .active{background: {=color}}#index p{border:1px solid {=color};border-left:none;}</style></script>
+    </head><body>
+<div id="index">
+    <p class="head active primaryColor" kind="all" style="-webkit-border-radius:6px 0px 0px 6px">全部</p>
+
+    <p kind="task" class="primaryColor">任务</p>
+
+    <p class="tail primaryColor" kind="invite" style="-webkit-border-radius:0px 6px 6px 0px">邀请</p>
+</div>
+
+<div id="lists">
+    <dl class="detail show" id="detail_all">
+        {%for i in data["all"]%}
+        <dt>
+            <span class="left">{{i["tag"]}}</span>
+            <span class="right">{{i["createtime"]}}</span>
+        </dt>
+        <dd>{{i["note"]}}</dd>
+        {%end%}
+    </dl>
+
+    <dl class="detail" id="detail_task"></dl>
+
+    <dl class="detail" id="detail_invite"></dl>
+</div>
+
+<script src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script>
+require.config({
+    paths: {
+        "zepto": "http://w.qiandeer.com/qd/static/lock/assets/zepto",
+        "api": "http://w.qiandeer.com/qd/static/lock/assets/api",
+        "skin": "/static/js/skin"
+    },
+    shim: {
+        "zepto": {
+            exports: "$"
+        },
+        "api": {
+            deps: ['zepto'],
+            exports: "API"
+        },
+        "skin": {
+            deps: ['zepto']
+        }
+    }
+});
+
+require(['zepto', 'api', 'skin'], function ($, API, skin) {
+
+    var loadStatus = {
+        all: false,
+        task: false,
+        invite: false
+        };    
+
+    function insertTemp(appname, icon, qq, intro, color, hbicon, hbintro){
+
+        $("#tpl-color").tmpl({color:color}).appendTo(document.head);
+
+    }
+
+    function getData(kind, count) {
+        $.ajax({
+            url: "/income/list",
+            data: {
+                kind: kind,
+                count: count
+            },
+            type: 'GET',
+            dataType: 'json',
+            success:function(data,textStatus,xhr){
+                if (data["data"]["lst"].length !== 0) {
+                    var receivedData = data["data"]["lst"];
+                    insertData(receivedData);
+                } else {
+                    loadStatus[kind] = true;
+                    window.ups_sdk_browser.onToast("加载完毕", 1);
+                }
+            }
+        });
+    }
+
+    function insertData (data) {
+        var htmlText = "";
+        for (var i = 0; i < data.length; i++) {
+            htmlText += '<dt><span class="left">' + data[i].tag + '</span><span class="right">' + data[i].createtime + '</span></dt><dd>' + data[i].note + '</dd>';
+        }
+        $(".show").append(htmlText);
+    }
+
+    insertTemp(localStorage['lsappname'],localStorage['lsicon'],localStorage['lsqq'],localStorage['lsintro'],localStorage['lscolor'],localStorage['lshbicon'],localStorage['lshbintro']);
+
+    $("#index p").eq(0).css({'border-left':'1px solid'+localStorage['lscolor']});
+
+    window.ontouchstart = function() {
+        var kind = $(".active").attr("kind");
+        console.log(document.body.scrollTop + " " + $(window).height() + " " + document.body.scrollHeight);
+        if(document.body.scrollTop + $(window).height() >= document.body.scrollHeight) {
+            if (!loadStatus[kind]) {
+                window.ups_sdk_browser.onToast("加载中...", 0);
+                getData(kind, $(".show dt").length);
+            }
+        }
+    }
+
+    $('#index p').click(function() {
+        var kind = $(this).attr("kind");
+        $('.active').removeClass('active');
+        $(this).addClass('active');
+        $(".detail").removeClass("show");
+        $("#detail_" + kind).addClass("show");
+
+        if ($(".show dt").length === 0) {
+            if (!loadStatus[kind]) {
+                getData(kind, 0);
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

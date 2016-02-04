@@ -1,0 +1,116 @@
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>旺旺红包--注册立即送钱</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="//w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body,html{height:100%;min-height:480px;width:100%;background-color:#8ad6f2;font-family:"Microsoft YaHei", "Helvetica Neue", Helvetica, STHeiTi, sans-serif}body{font-size:16px}#text-invitecode{display:none}.fc-blue{color:#22afe6}.content{width:360px;margin:0 auto}.main{position:relative;left:1px;top:-9px;width:294px;margin:0 auto;background-color:#eef9fd}.unstyled{list-style:none;margin:0;padding:0}h3{margin:5px 0;text-align:center;color:#22afe6;font-size:20px;font-weight:700}.btn-primary{background-color:#49beeb;width:200px;font-size:18px;padding:6px 0;border:1px solid #22afe6;border-radius:5px;-webkit-box-shadow:0 4px 0 #22afe6}.btn-install{margin-top:8px}.btn-primary:active{position:relative;top:2px;-webkit-box-shadow:0 2px 0 #22afe6;border-color:#22afe6}hr{border:1px solid #dbe5e9;margin:0 6px}.list{margin-left:14px;padding:0 12px;color:#535362;font-size:13px}.list li{margin:3px 0 0 0}.num{font-weight:700;font-size:14px;color:#fc5656;margin-right:3px}@media screen and (max-width: 359px){.content{width:320px}.header-pic{position:relative;left:-20px}}.share-box{position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;background-color:#000;opacity:.95}.share-slogen{position:relative;z-index:3;width:100%;display:block;margin:12px auto}.share-slogen img{width:203px;display:block;margin:240px auto}.share-bg{position:fixed;z-index:2;top:0;left:0;width:100%;text-align:right}.share-bg img{margin:8px;width:98px;height:219px}@media screen and (orientation: landscape){.share-slogen img{width:203px;display:block;float:right;margin:130px 120px 0 0}}</style>
+</head>
+<body class="page box vertical">
+<div class="content">
+    <header>
+        <img class="header-pic" src="/static/images/wangwang/share/header.png" alt="宣传页头部" width="360" height="177">
+    </header>
+
+    <section class="main tac">
+        <img class="dib" src="/static/images/wangwang/icon/newicon.jpg" width="100" height="100" />
+        <span class="db mt3" style="color:#535362">旺旺红包</span>
+        <span id='text-invitecode' class="db fs-14 mt5 box bpc" style="min-height:18px">邀请码： <span
+                class="fs-14 inviteNum tal fc-blue" style="min-width:45px;display:inline-block"></span></span>
+        <a id="btn-download" class="btn btn-primary btn-install">立即下载</a>
+        <hr class="mt16">
+        <h3 class="tal ml24 mt12">怎么赚钱</h3>
+        <ul class="unstyled tal list" style="padding-bottom:13px">
+            <li><span class="num">1</span> 进入旺旺红包即可抽取大红包！<span class="ml12 dib">红包可提现到支付宝或兑换Q币。</span></li>
+            <li><span class="num">2</span> 试用app赚钱，坚持登陆试玩奖励多多！</li>
+            <li><span class="num">3</span> 邀请朋友一起玩，不做任务也赚翻！</li>
+        </ul>
+    </section>
+
+    <footer class="fc-blue tac fs-12 pb12">Copyright 旺旺红包　2016 All rights reserved</footer>
+
+    <div class="share-box hide">
+        <div class="share">
+            <div class="share-slogen">
+                <img src="http://w.qiandeer.com/qd/static/lock/images/open_font.png" alt="用浏览器打开">
+            </div>
+            <div class="share-bg">
+                <img src="http://w.qiandeer.com/qd/static/lock/images/open_line.png" alt="用浏览器打开">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script>
+require.config({
+
+        paths: {
+
+            "zepto": "http://w.qiandeer.com/qd/static/lock/assets/zepto",
+            "api": "http://w.qiandeer.com/qd/static/lock/assets/api",
+            "statist": "/static/js/statist"
+        },
+
+        shim: {
+
+            "zepto": {
+                exports: "$"
+            },
+
+            "api": {
+                deps: ['zepto'],
+                exports: "API"
+            }
+        }
+});
+
+require(['zepto', 'api', 'statist'], function ($, API, _hmt) {
+
+    var iswx = /MicroMessenger/i.test(navigator.userAgent);
+    var isandroid = /android/i.test(navigator.userAgent);
+    var isios = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    var params = API.getRequest();
+    
+    // 统计页面pv
+    _hmt.push(["_trackEvent", "hongbaorili-pv", "click"]);
+
+    // url传入uic，展示邀请码
+    function showInviteCode() {
+        if (params.uic) {
+            $('.inviteNum').text(params.uic);
+            $("#text-invitecode").show();
+        } else {
+            $("#text-invitecode").hide();
+        }
+    }
+
+    if (isios) {
+        //统计给ios带量
+        _hmt.push(["_trackEvent", "hb-ios", "click"]);
+        location.href = "http://m.qianlu.com/p/c.html?c=331&m=1&u=1";
+    }
+
+    showInviteCode();
+
+    $("#btn-download").click(function () {
+        if (isandroid && iswx) {
+            $(".share-box").removeClass("hide").addClass("show");
+        } else if (isandroid) {
+            location.href = "http://www.hongbaorili.com/static/apk/wangwang/wangwang_release1_yaoqing_lianjie.apk";
+        } else {
+            $(".share-box").removeClass("hide").addClass("show");
+        }
+    });
+});
+</script>
+</body>
+</html>

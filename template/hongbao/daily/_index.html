@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta div_liwuet="UTF-8">
+    <title>每日红包</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:#010221}#header{width:100%;display: block;}.status{background:#a0a0a0;margin-top:30px;margin:0 auto;color:white; border-radius: 6px; height:2em;line-height: 2em; }#status1,#status2{}.div_liwu{width:87%;background: #ffcc00;overflow:hidden;margin:0 auto;margin-bottom: 20px;}.tip{margin-top:15px;margin-bottom: 15px;}.wrapper{padding: 18px;}.record{width:70%;background: white;float: left;}</style></head><body>
+
+<div>
+    <img src="/static/images/jingling/hongbao/header3.png" width="100%" id="header">
+    <div class='div_liwu'>
+        <div class="wrapper">
+        <img src='/static/images/jingling/hongbao/char1.png' width="60%">
+        <p class='tip'>每日完成 5 个下载任务即可抽取一次大红包</p>
+        <div class='record'></div>
+        <div id="status1" class="status tac">连接中</div>
+        </div>
+    </div>
+    <div class='div_liwu'>
+        <div class="wrapper">
+        <img src='/static/images/jingling/hongbao/char2.png' width="60%">
+        <p class='tip'>每日完成 6 个深度任务即可抽取一次大红包</p>
+        <div class='record'></div>
+        <div id="status2" class="status tac">连接中</div>
+        </div>
+    </div>
+    <div class='div_liwu'>
+        <div class="wrapper">
+        <img src='/static/images/jingling/hongbao/char3.png' width="60%">
+        <p class='tip'>锁屏精灵反馈广大用户每天送出大红包！</p>
+        <div id="status3" style="width:100%;" class="status tac">连接中</div>
+        </div>
+    </div>
+</div>
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>  
+    var params = API.getRequest();
+
+    $(document).ready(function(){
+        $.post("/hongbao/daily/index", {}, function(resp){
+            var surplus = parseInt(resp["data"]["surplus"]);
+            var allow = parseInt(resp["data"]["allow"]);
+            $("#id_surplus").html(surplus);
+
+            if(allow == 1){
+                $('#status').text('抢红包').css({"background":"#e94c3f","-webkit-box-shadow":"0px 5px 0px 0px #c3312b",'box-shadow':'0px 5px 0px 0px #c3312b'}).click(function(){
+                    window.location.replace('/hongbao/daily/pickup');
+                });
+            }
+            else{
+                $('#status').text('您今天不能再抢了噢！');
+            }
+        });
+    });
+</script>
+</body>
+</html>

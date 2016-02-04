@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>已邀请的用户</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>
+    body{background:#f5f5f5;}
+    #img_noship{display: none;margin:0 auto;margin-top:10%;width:60%;}
+    .wrapper{padding:15px;}
+    .wrapper section{margin-bottom: 15px;border-bottom:2px solid #d8d8d8;}
+    .date{color:#b7b7b7;margin-bottom: 15px;text-align: center;font-size: 12px;}
+    .div_award,.div_noaward{float:left;color:white;width:100px;height:80px;text-align:center;font-size:16px;}
+    .div_award p,.div_noaward p{vertical-align:middle;display: inline-block;}
+    .div_noaward{background: #5f5f5f}
+    .div_info{background: white;color:#626262;overflow:hidden;height:80px;font-size: 16px;}
+    .blackborder{border-left:2px dotted #5f5f5f;}
+    .bigger{font-size:28px;font-weight: bold;}
+    .div_info p{margin-top:14px;vertical-align: middle;}
+    .ghost{
+        display: inline-block;
+        width:1px;
+        height: 100%;
+        vertical-align: middle;
+    }
+    .icons{float:left;margin-left: 10px;margin-right: 5px;}
+    .icons img{vertical-align: middle;width:15px;}
+    .infos{overflow: hidden;}
+    </style><script type="text/template" id="tpl-color"><style>.primaryBgColor{background:{=color}}.redborder{border-left:2px dotted {=color}}</style></script></head><body>
+    <img src='/static/images/jingling/master/none.png' id='img_noship'/>
+
+    <div class='wrapper'>
+{%for u in data["lst"]%}   
+    <section>
+        <p class="date">{{u["createtime"]}}</p>
+    {%if u["phone"] == 0%}
+        <div class="div_noaward"><span class="ghost"></span><p>绑定手机<br/>可获得2元</p></div>
+        <div class="div_info blackborder">
+            <p class="icons"><img src="/static/images/jingling/user/info/id.png" /></p><p class="infos">徒弟ID：{{u["tid"]}}</p>
+            <p class="icons"><img src="/static/images/jingling/user/info/tel.png" /></p><p class="infos">手机号：暂未绑定</p>
+        </div>
+    {%else%}
+        <div class="div_award primaryBgColor"><span class="ghost"></span><p><span class='bigger'>+2元</span><br/>绑定手机</p></div>
+        <div class="div_info redborder">
+            <p class="icons"><img src="/static/images/jingling/user/info/id.png" /></p><p class="infos">徒弟ID：{{u["tid"]}}</p>
+            <p class="icons"><img src="/static/images/jingling/user/info/tel.png" /></p><p class="infos">手机号：{{u["_phone"]}}</p>
+        </div>
+    {%end%}
+    </section>
+{%end%}
+</div>
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>
+
+    function insertTemp(appname, icon, qq, intro, color, hbicon, hbintro){
+
+        $("#tpl-color").tmpl({color:color}).appendTo(document.head);
+
+    }
+
+    insertTemp(localStorage['lsappname'],localStorage['lsicon'],localStorage['lsqq'],localStorage['lsintro'],localStorage['lscolor'],localStorage['lshbicon'],localStorage['lshbintro']);
+
+    if(!$('section').get(0)){
+        $('#img_noship').css({'display':'block'});
+    }
+</script>
+</body>
+</html>

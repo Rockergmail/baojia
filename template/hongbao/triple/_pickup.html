@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <title>pocket money</title>
+    <link rel="stylesheet" href="//dn-w-qiandeer.qbox.me/qd/static/dist/1.9.14/common.css">
+    <style>body{background-color:transparent}.tip-layer{background:rgba(0,0,0,.8);width:100%;height:100%;overflow:hidden;-webkit-transform:translateZ(0)}@-webkit-keyframes animations{0%{-webkit-transform:scale(.3);opacity:0}20%{-webkit-transform:scale(.6);opacity:1}80%{-webkit-transform:scale(1.2)}100%{-webkit-transform:scale(1)}}@keyframes animations{0%{transform:scale(0);opacity:0}20%{transform:scale(.6);opacity:1}80%{transform:scale(1.2)}100%{transform:scale(1)}}.bg2{display:none;width:280px;height:367px;left:50%;margin-left:-140px;top:50%;margin-top:-183.5px;background-color:#de452e;border-radius:10px;text-align:center;-webkit-transform:translateZ(0);-webkit-animation:animations .5s ease-out;animation:animations .5s ease-out;}.char{color:#fff;margin-top:80px;width:100%;line-height:1.5em}.icon-closex{right:25px;top:25px}.head{display:block;margin:23px auto 12px;border:3px solid #fff;-webkit-border-radius:50%;border-radius:50%}.cid{margin-bottom:10px}.char2{margin-bottom:20px}.money{font-size:44px;margin-bottom:0;font-weight:700}#getmoney{width:193px;height:39.5px;line-height:39.5px;background-color:#ffbb01;margin:0 auto 10px;border-radius:8px}.char3{opacity:.5;color:#fff;width:193px;margin:0 auto 15px;height:33px}#shuoming{color:white;position: absolute;top:0px;right:0px;font-size: 14px;padding:10px;}.what{font-size:0.8em;border-radius: 50%;border:1px solid white;width:1em;height: 1em;display: inline-block;margin-right: 5px;}</style>
+    <script type="text/template" id="tpl-hb">
+    <div class="tip-layer relative">
+       <div class="bg2 absolute" style="display:block">
+            <img class="head" src='{=hbicon}' width="100px" height="100px">
+            <p id="shuoming"><span class="what">?</span><span style="border-bottom:1px solid white;">红包说明</span></p>
+            <p class="cid fs-12 fc-white">ID : <span id="id_tid"></span></p>
+            <p class="char2 fs-18 fc-white">{=hbintro}</p>
+            <p id="id_bonus" class="fc-white money">00.00</p>
+            <p class="char3">已存入您的余额</p>
+            <p id="getmoney" class="fs-18 fc-white tac">拿钱走人</p>
+        </div>
+    </div>
+    </script>
+    </head><body>
+<script src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script>
+require.config({
+    paths: {
+        "zepto": "http://w.qiandeer.com/qd/static/lock/assets/zepto",
+        "api": "http://w.qiandeer.com/qd/static/lock/assets/api",
+        "CountUp": "/static/lib/countup"
+    },
+    shim: {
+        "zepto": {
+            exports: "$"
+        },
+        "api": {
+            deps: ['zepto'],
+            exports: "API"
+        },
+        "CountUp": {
+            exports: "CountUp"
+        }
+    }
+});
+
+require(['zepto', 'api', 'CountUp'], function ($, API, CountUp) {
+    function insertTemp(appname, icon, qq, intro, color, hbicon, hbintro){
+
+        $('#tpl-hb').tmpl({hbicon:hbicon,hbintro:hbintro}).appendTo(document.body);
+
+    }
+
+    insertTemp(localStorage['lsappname'],localStorage['lsicon'],localStorage['lsqq'],localStorage['lsintro'],localStorage['lscolor'],localStorage['lshbicon'],localStorage['lshbintro']);
+
+        var params = API.getRequest();
+        var version = params['v']?params['v']:0;
+        var pmtype=params['pm'];
+        //pmtype:1:下载红包、2:签到红包、0:每日红包
+
+        if(!check(pmtype)){
+
+            $.post("/hongbao/triple/pickup", {kind:pmtype}, function(resp){
+                if(resp["code"]==0){
+                    var bonus = parseFloat(resp["data"]["bonus"]);
+                    var tid = resp["data"]["tid"];
+                    $("#id_tid").html(tid);
+                    $("#id_bonus").html(bonus);
+                    setlocal(pmtype,tid,bonus);
+                    var options = {
+                              useEasing : true,
+                              useGrouping : true,
+                              separator : ',',
+                              decimal : '.',
+                              prefix : '',
+                              suffix : ''
+                            };
+                    var showNumber=new CountUp('id_bonus',0,bonus,2,3.5,options);
+                    showNumber.start();
+                 }
+                else {
+                    getlocal(pmtype);
+                }
+            });
+
+        } else {
+            getlocal(pmtype);
+        }
+
+        $("#shuoming").click(function(){
+            location.href='/static/page/_guide.html?cl=2';
+        });
+
+        $('#getmoney').click(function(){
+            window.history.go(-1);
+        });
+
+        function check(pmtype){
+            var result=false;
+            var now=new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().getDate();
+            switch(pmtype){
+                case '1':
+                    result=sessionStorage.date1==now;
+                    break;
+                case '2':
+                    result=sessionStorage.date2==now;
+                    break;
+                case '3':
+                    result=sessionStorage.date3==now;                    
+                    break;
+            }
+            return result;
+        }
+
+        function setlocal(pmtype,tid,bonus){
+            var now=new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().getDate();
+            sessionStorage.lsid=tid+'(已抢)';
+             switch(pmtype){
+                case '1':
+                    sessionStorage.date1=now;
+                    sessionStorage.bonus1=bonus;
+                    break;
+                case '2':
+                    sessionStorage.date2=now;
+                    sessionStorage.bonus2=bonus;
+                    break;
+                case '3':
+                    sessionStorage.date3=now;
+                    sessionStorage.bonus3=bonus;
+                    break;
+            }
+        }
+
+        function getlocal(pmtype){
+            $("#id_tid").html(sessionStorage.lsid);
+            switch(pmtype){
+                case '1':
+                    $("#id_bonus").html(sessionStorage.bonus1);
+                    break;
+                case '2':
+                    $("#id_bonus").html(sessionStorage.bonus2);
+                    break;
+                case '3':
+                    $("#id_bonus").html(sessionStorage.bonus3);
+                    break;
+            }
+        }
+    });
+        
+    </script>
+</body>
+</html>

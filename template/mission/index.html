@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>新手任务</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>
+        html,body{height:100%;background: white;}
+        #page-begin{height: 100%;color:white;background: #dc5454;text-align: center;}
+        h1{margin:0px;padding-top:30px;font-size:2em;}
+        h2{color:#dc5454;}
+        #page-begin img{max-width:300px;width:100%;}
+        .tipx{margin:5px auto 30px;-webkit-transform:translateZ(0);transform:translateZ(0);}
+        #start,#btn-finish{border:2px solid white;-webkit-border-radius:30px;width:200px;padding:6px 0px;bottom:30px;left:50%;margin-left:-100px;}
+        #btn-finish{border:2px solid black;bottom:60px;}
+        #page-questions,#page-end{height: 100%}
+        #text-questions{padding:30px 20px;font-size:16px;white-space:nowrap;}
+        #mark-asking{color:#dc5454;border:1px solid #dc5454;padding:1px 4px;vertical-align: middle;}
+        #text-problem{margin-left: 5px;vertical-align: middle;}
+        #text-answertips{padding: 15px 20px 15px 15px;background: #e0e0e0;color:#3d3d3d;font-size:16px;line-height: 1.6em;}
+        #btn-choices{bottom:0px;color:white;width:100%;}
+        .ans{background: #dc5454;padding:15px 0px;width:290px;-webkit-border-radius:30px;margin:0 auto 16px;text-align: center;}
+        #num-pages{background: #646464;padding:5px 10px;-webkit-border-radius:30px;}
+        #img-finish{width:100%;max-width: 230px;padding-top:70px;}
+        @-webkit-keyframes animations{0%{-webkit-transform:scale(.3);opacity:0}20%{-webkit-transform:scale(.6);opacity:1}80%{-webkit-transform:scale(1.2)}100%{-webkit-transform:scale(1)}}
+        @keyframes animations{0%{transform:translateZ(0);transform:scale(0);opacity:0}20%{transform:scale(.6);opacity:1}80%{transform:scale(1.2)}100%{transform:scale(1)}}
+        .play{-webkit-transform:translateZ(0);-webkit-animation:animations 1s ease-out 0.8;animation:animations 1s ease-out 0.8;}
+    </style></head><body>
+    <!-- 开始页 -->
+    <section id="page-begin" class="relative">
+        <h1>新手教程</h1>
+        <p class='tipx'>&nbsp;</p>
+        <img src="/static/images/jingling/user/mission/bg.png" alt="新手教程">
+        <div id="start" class="fs-20 absolute">开始</div>
+    </section>
+    <!-- 题目 -->
+    <section id="page-questions" class="relative" style="display:none;">
+        <div id="text-questions"><span id="mark-asking" class='fs-13'>提问</span><span id="text-problem" class='fs-20'></span></div>
+        <div id="text-answertips"></div>
+        <div id="btn-choices" class="absolute">
+            <div class="ans" id="text-choice-a"></div>
+            <div class="ans" id="text-choice-b"></div>
+            <div class="tac" style="margin-top:50px;margin-bottom:35px;"><span id="num-pages"></span></div>
+        </div>
+    </section>
+    <!-- 恭喜 -->
+    <section id="page-end" class="relative tac" style="display:none;">
+        <img src="/static/images/jingling/user/mission/cong.png" alt="恭喜通关" id="img-finish">
+        <h2>恭喜通关</h2>
+        <p id="btn-finish" class="absolute fs-20">完成</p>
+    </section>
+<script src="http://requirejs.org/docs/release/2.1.22/minified/require.js"></script>
+<script>
+require.config({
+    paths: {
+        "zepto": "http://w.qiandeer.com/qd/static/lock/assets/zepto",
+        "api": "http://w.qiandeer.com/qd/static/lock/assets/api",
+        "skin": "/static/js/skin"
+    },
+    shim: {
+        "zepto": {
+            exports: "$"
+        },
+        "api": {
+            deps: ['zepto'],
+            exports: "API"
+        },
+        "skin": {
+            deps: ['zepto'],
+            exports: "skin"
+        }
+    }
+});
+
+require(['zepto', 'api', 'skin'], function ($, API, skin) {
+  console.log(skin);
+  var counter = {
+      "times" : 0
+  },  
+      qna = [
+    {
+        'id' : '1 / 4',
+        'text-problem' : skin['appname'] + '发红包的钱从哪来？',
+        'text-answertips' : skin['appname'] + '与赞助商合作，帮助赞助商推广新的APP。赞助费以红包的方式回馈用户。',
+        'text-choice-a' : '赞助商提供',
+        'text-choice-b' : '老板的私房钱',
+        'wrong' : '#text-choice-b'
+    },
+    {
+        'id' : '2 / 4',
+        'text-problem' : '在' + skin['appname'] + '怎么赚钱？',
+        'text-answertips' : skin['appname'] + '通过红包、试玩APP奖励的方式将赞助费发放给用户，如果大家能多试玩这些APP,赞助商就会持续提供赞助费，大家就一直有钱赚，有红包拿。',
+        'text-choice-a' : '天天来拿免费的红包就好了',
+        'text-choice-b' : '拿红包的同时体验试玩APP',
+        'wrong' : '#text-choice-a'
+    },
+    {
+        'id' : '3 / 4',
+        'text-problem' : '提现几天没到账是怎么回事？',
+        'text-answertips' : skin['appname'] + '余额满30元可以提现到支付宝，或者充值话费、Q币，兑换审核需要12小时，节假日顺延，请您耐心等待。',
+        'text-choice-a' : '被审核人员私吞了',
+        'text-choice-b' : '遇到节假日，审核人员在休息',
+        'wrong' : '#text-choice-a'
+    },
+    {
+        'id' : '4 / 4',
+        'text-problem' : '我做任务没有奖励是怎么回事？',
+        'text-answertips' : skin['appname'] + '内的任务由赞助商提供，用户按照赞助商要求体验APP即可获得收益奖励。按照要求体验APP一段时间即可获得收入。',
+        'text-choice-a' : '程序员把任务扣给自己了',
+        'text-choice-b' : '没按照要求体验/网络不好',
+        'wrong' : '#text-choice-a'
+    }
+  ];
+
+  function loadQNA (serial) {
+      $('.wrongans').removeClass('wrongans');
+      $(".ans").each(function(){
+          $(this).unbind("click").css('background','#dc5454');
+      })
+
+      var temp = qna[serial];
+      $("#text-problem").text(temp['text-problem']);
+      $("#text-answertips").text(temp['text-answertips']);
+      $("#text-choice-a").text(temp['text-choice-a']);
+      $("#text-choice-b").text(temp['text-choice-b']);
+      $("#num-pages").text(temp['id']);
+
+      $(temp['wrong']).addClass('wrongans');
+      
+      counter['times'] += 1;
+
+      // 根据对错改变btn-choices的显示逻辑
+      $(".ans").each(function(){
+          $(this).click(function(){
+              if($(this).hasClass('wrongans')){
+                  $(this).css('background','#959595').text("→_→ 选另一个试试");
+              } else {
+                  //题目判断（做了4题就跳转）
+                  if(counter['times'] < 4){
+                      $(this).css('background',"#83d367").text("\\(≧▽≦)/ 答对啦～～").unbind('click');
+                      $(".wrongans").unbind('click');
+                      setTimeout(function(){loadQNA(counter['times'])},1000);
+                  } else {
+                      $(this).css('background',"#83d367").text("\\(≧▽≦)/ 答对啦～～").unbind('click');
+                      $(".wrongans").unbind('click');
+                      setTimeout(pageToEnd,1000);
+                  }
+              }
+          });
+      })
+  };
+
+  // 跳转到最后一页
+  function pageToEnd(){
+      $.post("/mission/pickup", {}, function(resp){
+          if(resp['code'] === 0){　　
+            window.ups_sdk_browser.onToast(resp['data']['msg'],1);
+          }
+        });
+      //切换页面
+      $("#page-questions").hide();
+      $('#page-end').show();
+      //退出
+      $("#page-end").click(function(){
+        window.ups_sdk_browser.doSomething(102,0,'');
+      });
+  } 
+
+    // 查询新人任务状态
+    $.post("/mission/status", {}, function(resp){
+        if(resp['code'] === 0 && resp['data']['avaliable'] === 1){　　
+          $(".tipx").text('完成任务奖励 0.3 元').addClass('play');
+        } else {
+          sessionStorage.played = "true";
+          $(".tipx").text('温故而知新').show();
+        }
+      });
+
+    //加载问题
+    loadQNA(counter['times']);
+
+    //切换页面
+    $('#page-begin').click(function(){
+      $(this).hide();
+      $('#page-questions').show();
+    });
+
+});
+</script>
+</body>
+</html>

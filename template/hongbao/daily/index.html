@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cmn-Hans">
+    <meta charset="UTF-8">
+    <title>每日红包</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- 360用GCF渲染 -->
+    <meta name="renderer" content="webkit">
+    <!-- 优先使用最新IE内核,chrome内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 禁止百度转码 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link rel="stylesheet" href="http://w.qiandeer.com/qd/static/lock/assets/global.css">
+    <style>body{background:#fcecd2}#header{width:100%;display: block;}#more,#status{width:80%;background:#e94c3f;height:40px;line-height:40px;-webkit-border-radius:6px;margin:0 auto;margin-bottom:15px}#more{margin-bottom: 15px;-webkit-box-shadow:0px 5px 0px 0px #c3312b;box-shadow:0px 5px 0px 0px #c3312b;}#status{background:#c3c2c2;margin-top:30px;-webkit-box-shadow:0px 5px 0px 0px #a1a1a1;box-shadow:0px 5px 0px 0px #a1a1a1;}#chars{width:85%;background: #da3931;overflow:hidden;margin:0 auto;-webkit-border-radius:0px 0px 15px 15px;padding-bottom:8px; }#tips{margin-top:30px;line-height: 1.8em;}</style></head><body>
+<div>
+    <img src="/static/images/jingling/hongbao/header.png" width="100%" id="header">
+    <div id="chars">
+        <p id='tips' class='fc-white fw-b tac fs-18'>坚持每日完成下载任务再抢红包<br/>可提高抽到大红包的概率</p>
+        <div id="status" class="tac fc-white">连接中...</div>
+        <div id="more" class="tac" style="color:#fce9c7">赚更多</div>
+    </div>
+</div>
+<script src="//w.qiandeer.com/qd/static/lock/assets/zepto.js"></script>
+<script src="//w.qiandeer.com/qd/static/lock/assets/api.js"></script>
+<script>  
+    var params = API.getRequest();
+    $('#more').click(function(){
+        if(params.vc>=2){
+            window.ups_sdk_browser.doSomething(103,0,'');
+        } else {
+        location.replace('/master/index');}
+    });
+
+    $(document).ready(function(){
+        $.post("/hongbao/daily/index", {}, function(resp){
+            var surplus = parseInt(resp["data"]["surplus"]);
+            var allow = parseInt(resp["data"]["allow"]);
+            $("#id_surplus").html(surplus);
+
+            if(allow == 1){
+                $('#status').text('抢红包').css({"background":"#e94c3f","-webkit-box-shadow":"0px 5px 0px 0px #c3312b",'box-shadow':'0px 5px 0px 0px #c3312b'}).click(function(){
+                    window.location.replace('/hongbao/daily/pickup');
+                });
+            }
+            else{
+                $('#status').text('您今天不能再抢了噢！');
+            }
+        });
+    });
+</script>
+</body>
+</html>
